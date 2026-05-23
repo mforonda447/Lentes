@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lentes: Convergentes y Divergentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0f2e;
+    --navy2: #0d1540;
+    --midnight: #060b1f;
+    --cyan: #00d4ff;
+    --cyan2: #00a8cc;
+    --gold: #f0c040;
+    --gold2: #d4a520;
+    --rose: #ff6b9d;
+    --mint: #00ffc8;
+    --lavender: #a78bfa;
+    --white: #f0f4ff;
+    --glass: rgba(255,255,255,0.05);
+    --glass2: rgba(255,255,255,0.08);
+    --border: rgba(0,212,255,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--midnight);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 30% 30%, #1a2060 0%, #0a0f2e 50%, #060b1f 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 80% 20%, rgba(0,212,255,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 10% 80%, rgba(167,139,250,0.06) 0%, transparent 40%);
+  }
+
+  .cover-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  #cover-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cover-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+  }
+
+  .cover-badge {
+    display: inline-block;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    padding: 6px 20px;
+    border-radius: 50px;
+    margin-bottom: 30px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .cover-title span {
+    display: block;
+    background: linear-gradient(135deg, var(--cyan), var(--mint), var(--lavender));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cover-sub {
+    font-size: 1.1rem;
+    color: rgba(240,244,255,0.6);
+    margin-bottom: 50px;
+    animation: fadeUp 0.8s 0.4s ease both;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .team-card {
+    background: var(--glass2);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px 40px;
+    animation: fadeUp 0.8s 0.6s ease both;
+    margin-bottom: 30px;
+  }
+
+  .team-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .team-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .member {
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    color: var(--white);
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+
+  .member:hover {
+    background: rgba(0,212,255,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,212,255,0.2);
+  }
+
+  .scroll-cue {
+    animation: bounce 2s infinite, fadeUp 0.8s 1s ease both;
+    color: rgba(240,244,255,0.3);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── NAV ─── */
+  .toc {
+    background: var(--navy2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .toc::-webkit-scrollbar { display: none; }
+
+  .toc-item {
+    padding: 16px 20px;
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    color: rgba(240,244,255,0.4);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+  }
+
+  .toc-item:hover, .toc-item.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 30px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 50px;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    background: rgba(240,192,64,0.1);
+    border: 1px solid rgba(240,192,64,0.3);
+    padding: 4px 12px;
+    border-radius: 4px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--white), rgba(240,244,255,0.7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cyan), transparent);
+    margin-bottom: 50px;
+    opacity: 0.3;
+  }
+
+  /* ─── THEORY CARDS ─── */
+  .theory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--lavender));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0,212,255,0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px rgba(0,212,255,0.05);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 10px;
+  }
+
+  .card-body {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: rgba(240,244,255,0.75);
+  }
+
+  .card.gold .card-title { color: var(--gold); }
+  .card.gold::before { background: linear-gradient(90deg, var(--gold), var(--rose)); }
+  .card.rose .card-title { color: var(--rose); }
+  .card.rose::before { background: linear-gradient(90deg, var(--rose), var(--lavender)); }
+  .card.mint .card-title { color: var(--mint); }
+  .card.mint::before { background: linear-gradient(90deg, var(--mint), var(--cyan)); }
+
+  /* ─── FORMULA BOX ─── */
+  .formula-box {
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-left: 4px solid var(--cyan);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--cyan);
+    position: relative;
+  }
+
+  .formula-label {
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--midnight);
+    padding: 0 8px;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: rgba(0,212,255,0.6);
+    text-transform: uppercase;
+  }
+
+  .formula-box.gold {
+    background: rgba(240,192,64,0.04);
+    border-color: rgba(240,192,64,0.25);
+    border-left-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .formula-box.gold .formula-label { color: rgba(240,192,64,0.6); }
+
+  /* ─── SIMULATION CONTAINER ─── */
+  .sim-wrapper {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sim-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 24px;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), transparent, rgba(167,139,250,0.1)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .sim-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .sim-subtitle {
+    font-size: 0.82rem;
+    color: rgba(240,244,255,0.4);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 24px;
+  }
+
+  canvas.sim-canvas {
+    width: 100%;
+    height: 320px;
+    border-radius: 12px;
+    background: rgba(6,11,31,0.8);
+    border: 1px solid rgba(0,212,255,0.1);
+    display: block;
+    cursor: crosshair;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+    align-items: center;
+  }
+
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ctrl-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: rgba(240,244,255,0.4);
+    text-transform: uppercase;
+  }
+
+  .ctrl-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--cyan);
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 160px;
+    height: 4px;
+    background: rgba(0,212,255,0.1);
+    border-radius: 4px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--cyan);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0,212,255,0.6);
+  }
+
+  .btn {
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--glass);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn:hover {
+    background: rgba(0,212,255,0.1);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .btn.active {
+    background: rgba(0,212,255,0.15);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .btn.gold {
+    border-color: rgba(240,192,64,0.3);
+  }
+  .btn.gold:hover, .btn.gold.active {
+    background: rgba(240,192,64,0.1);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .info-panel {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    border: 1px solid rgba(0,212,255,0.08);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: rgba(240,244,255,0.6);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .info-item { display: flex; gap: 8px; align-items: center; }
+  .info-key { color: rgba(240,244,255,0.3); }
+  .info-val { color: var(--cyan); font-weight: 500; }
+  .info-val.gold { color: var(--gold); }
+  .info-val.rose { color: var(--rose); }
+
+  /* ─── TYPES VISUAL ─── */
+  .lens-types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 30px 0;
+  }
+
+  .lens-type-card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .lens-type-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  }
+
+  .lens-type-card svg {
+    width: 70px;
+    height: 60px;
+    margin: 0 auto 12px;
+    display: block;
+  }
+
+  .lens-type-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .lens-type-desc {
+    font-size: 0.75rem;
+    color: rgba(240,244,255,0.4);
+  }
+
+  /* ─── FORMULA TABLE ─── */
+  .formula-section {
+    background: var(--navy2);
+    padding: 80px 30px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .formula-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    font-size: 0.88rem;
+  }
+
+  .formula-table thead th {
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.15);
+    padding: 14px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  .formula-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.2s;
+  }
+
+  .formula-table tbody tr:hover {
+    background: rgba(0,212,255,0.03);
+  }
+
+  .formula-table tbody td {
+    padding: 14px 18px;
+    color: rgba(240,244,255,0.8);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .formula-table tbody td:first-child {
+    font-family: 'DM Mono', monospace;
+    color: var(--gold);
+    font-size: 0.9rem;
+  }
+
+  .formula-table tbody td:nth-child(2) {
+    font-family: 'DM Mono', monospace;
+    color: var(--cyan);
+  }
+
+  /* ─── GLOSSARY ─── */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 30px;
+  }
+
+  .gloss-item {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    transition: all 0.3s;
+  }
+
+  .gloss-item:hover {
+    border-color: rgba(0,212,255,0.35);
+    transform: translateY(-2px);
+  }
+
+  .gloss-term {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .gloss-def {
+    font-size: 0.83rem;
+    color: rgba(240,244,255,0.65);
+    line-height: 1.6;
+  }
+
+  /* ─── NOTE BOX ─── */
+  .note {
+    background: rgba(240,192,64,0.06);
+    border: 1px solid rgba(240,192,64,0.2);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 0.87rem;
+    color: rgba(240,244,255,0.7);
+    margin: 20px 0;
+    line-height: 1.6;
+  }
+
+  .note strong { color: var(--gold); }
+
+  .alert {
+    background: rgba(255,107,157,0.06);
+    border: 1px solid rgba(255,107,157,0.2);
+    border-left: 3px solid var(--rose);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 0.87rem;
+    color: rgba(240,244,255,0.7);
+    margin: 20px 0;
+    line-height: 1.6;
+  }
+
+  .alert strong { color: var(--rose); }
+
+  /* ─── TWO-COL ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 30px 0;
+  }
+
+  @media(max-width: 700px) {
+    .two-col { grid-template-columns: 1fr; }
+    .lens-types { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--midnight);
+    border-top: 1px solid var(--border);
+    padding: 40px 30px;
+    text-align: center;
+    font-size: 0.78rem;
+    color: rgba(240,244,255,0.2);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  footer span { color: var(--cyan); }
+
+  /* ─── SEPARATOR ─── */
+  .section-sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.15), transparent);
+    margin: 0 30px;
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── SIGN CONVENTION TABLE ─── */
+  .sign-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 0.85rem;
+  }
+  .sign-table th {
+    background: rgba(167,139,250,0.1);
+    border: 1px solid rgba(167,139,250,0.2);
+    padding: 10px 14px;
+    color: var(--lavender);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .sign-table td {
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 10px 14px;
+    color: rgba(240,244,255,0.75);
+  }
+  .sign-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    color: var(--lavender);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ COVER ═══════════════════ -->
+<section class="cover" id="cover">
+  <div class="cover-grid"></div>
+  <canvas id="cover-canvas"></canvas>
+  <div class="cover-content">
+    <div class="cover-badge">Óptica Física · Física de Ondas</div>
+    <h1 class="cover-title">
+      Lentes:
+      <span>Convergentes y Divergentes</span>
+    </h1>
+    <p class="cover-sub">De la geometría a la ecuación universal de Descartes</p>
+    <div class="team-card">
+      <div class="team-title">✦ Integrantes del Grupo</div>
+      <div class="team-members">
+        <div class="member">Mariana Alzate</div>
+        <div class="member">Manuela Foronda</div>
+        <div class="member">Camila Marín</div>
+        <div class="member">Eddier Bohórquez</div>
+      </div>
+    </div>
+    <div class="scroll-cue">
+      <div class="scroll-arrow"></div>
+      EXPLORAR
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav class="toc">
+  <div class="toc-item" onclick="scrollTo('s1')">01 · Qué es una Lente</div>
+  <div class="toc-item" onclick="scrollTo('s2')">02 · Tipos</div>
+  <div class="toc-item" onclick="scrollTo('s3')">03 · Simulación</div>
+  <div class="toc-item" onclick="scrollTo('s4')">04 · Ecuación de Descartes</div>
+  <div class="toc-item" onclick="scrollTo('s5')">05 · Focos y Focal</div>
+  <div class="toc-item" onclick="scrollTo('s6')">06 · Aumento y Potencia</div>
+  <div class="toc-item" onclick="scrollTo('sf')">07 · Fórmulas</div>
+  <div class="toc-item" onclick="scrollTo('sg')">08 · Glosario</div>
+</nav>
+
+<!-- ═══════════════════ S1: QUÉ ES ═══════════════════ -->
+<div id="s1"></div>
+<section class="section">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">¿Qué es una Lente?</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="theory-grid">
+    <div class="card reveal">
+      <div class="card-icon">🔬</div>
+      <div class="card-title">Definición</div>
+      <div class="card-body">Una <strong style="color:var(--cyan)">lente</strong> es un sistema óptico limitado por dos superficies curvas refringentes (generalmente esféricas, aunque una de las caras puede ser plana) que comparten un eje común llamado eje principal. Su función es doblar los rayos de luz mediante refracción para formar imágenes.</div>
+    </div>
+    <div class="card gold reveal">
+      <div class="card-icon">📐</div>
+      <div class="card-title">Suposiciones del Modelo</div>
+      <div class="card-body">
+        Para simplificar el estudio asumimos:<br><br>
+        • A ambos lados de la lente el medio es el mismo, con índice de refracción n₁.<br>
+        • El índice de la lente es n₂.<br>
+        • La lente es <strong style="color:var(--gold)">delgada</strong>: su espesor es despreciable frente a los radios de curvatura.
+      </div>
+    </div>
+    <div class="card rose reveal">
+      <div class="card-icon">↔️</div>
+      <div class="card-title">Eje Principal</div>
+      <div class="card-body">Es la recta que pasa por los centros de curvatura C₁ y C₂ de ambas superficies de la lente. Todos los análisis geométricos se realizan respecto a este eje, que también contiene al <strong style="color:var(--rose)">centro óptico O</strong>.</div>
+    </div>
+    <div class="card mint reveal">
+      <div class="card-icon">💡</div>
+      <div class="card-title">Aplicaciones Reales</div>
+      <div class="card-body">Las lentes son el corazón de la óptica práctica: gafas y lentes de contacto correctores de la visión, cámaras fotográficas, microscopios de investigación, telescopios astronómicos, lupas, proyectores y sistemas de visión computacional.</div>
+    </div>
+  </div>
+
+  <div class="note reveal">
+    <strong>💡 Nota clave:</strong> La condición de lente delgada simplifica enormemente los cálculos. Bajo esta aproximación, los dos planos principales de la lente coinciden en un único plano central, y los rayos se refractan en un solo punto.
+  </div>
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ═══════════════════ S2: TIPOS ═══════════════════ -->
+<div id="s2"></div>
+<section class="section">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Tipos de Lentes</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <p class="reveal" style="color:rgba(240,244,255,0.7); margin-bottom:30px; font-size:0.95rem; line-height:1.8;">
+    Las lentes se clasifican en dos grandes familias según su geometría y efecto sobre la luz. Cada familia tiene tres subtipos según la combinación de sus superficies.
+  </p>
+
+  <div class="two-col reveal">
+    <div>
+      <div class="card" style="border-top:3px solid var(--cyan); margin-bottom:16px;">
+        <div class="card-title" style="font-size:1.1rem;">🔵 Convergentes (f &gt; 0)</div>
+        <div class="card-body" style="margin-top:8px;">Son más gruesas en el centro que en los bordes. Hacen converger los rayos paralelos al eje principal hacia un único punto: el <strong style="color:var(--cyan)">foco imagen F<sub>i</sub></strong>. Su distancia focal es positiva.</div>
+      </div>
+      <div class="lens-types" style="grid-template-columns:1fr 1fr 1fr;">
+        <div class="lens-type-card">
+          <svg viewBox="0 0 70 60"><ellipse cx="35" cy="30" rx="16" ry="26" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1.5"/><ellipse cx="35" cy="30" rx="8" ry="26" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="0.8"/></svg>
+          <div class="lens-type-name" style="color:var(--cyan)">Biconvexa</div>
+          <div class="lens-type-desc">Ambas caras convexas</div>
+        </div>
+        <div class="lens-type-card">
+          <svg viewBox="0 0 70 60"><path d="M30 4 Q42 30 30 56 L34 56 Q50 30 34 4 Z" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1.5"/></svg>
+          <div class="lens-type-name" style="color:var(--cyan)">Plano-Convexa</div>
+          <div class="lens-type-desc">Una cara plana</div>
+        </div>
+        <div class="lens-type-card">
+          <svg viewBox="0 0 70 60"><path d="M28 4 Q44 30 28 56 Q34 40 40 30 Q34 20 28 4Z" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1.5"/></svg>
+          <div class="lens-type-name" style="color:var(--cyan)">Menisco Conv.</div>
+          <div class="lens-type-desc">Cóncavo-convexa</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="border-top:3px solid var(--rose); margin-bottom:16px;">
+        <div class="card-title" style="color:var(--rose); font-size:1.1rem;">🔴 Divergentes (f &lt; 0)</div>
+        <div class="card-body" style="margin-top:8px;">Son más delgadas en el centro que en los bordes. Hacen divergir los rayos paralelos como si provinieran de un punto: el <strong style="color:var(--rose)">foco virtual F<sub>i</sub></strong>. Su distancia focal es negativa.</div>
+      </div>
+      <div class="lens-types" style="grid-template-columns:1fr 1fr 1fr;">
+        <div class="lens-type-card">
+          <svg viewBox="0 0 70 60"><path d="M22 4 Q38 30 22 56 L48 56 Q32 30 48 4Z" fill="rgba(255,107,157,0.12)" stroke="#ff6b9d" stroke-width="1.5"/></svg>
+          <div class="lens-type-name" style="color:var(--rose)">Bicóncava</div>
+          <div class="lens-type-desc">Ambas caras cóncavas</div>
+        </div>
+        <div class="lens-type-card">
+          <svg viewBox="0 0 70 60"><path d="M34 4 Q22 30 34 56 L38 56 L38 4Z" fill="rgba(255,107,157,0.12)" stroke="#ff6b9d" stroke-width="1.5"/></svg>
+          <div class="lens-type-name" style="color:var(--rose)">Plano-Cóncava</div>
+          <div class="lens-type-desc">Una cara plana</div>
+        </div>
+        <div class="lens-type-card">
+          <svg viewBox="0 0 70 60"><path d="M40 4 Q26 30 40 56 Q34 40 30 30 Q34 20 40 4Z" fill="rgba(255,107,157,0.12)" stroke="#ff6b9d" stroke-width="1.5"/></svg>
+          <div class="lens-type-name" style="color:var(--rose)">Menisco Div.</div>
+          <div class="lens-type-desc">Cóncavo-convexa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ═══════════════════ S3: SIMULACIONES ═══════════════════ -->
+<div id="s3"></div>
+<section class="section">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Simulaciones Interactivas</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <!-- SIM 1: Convergente -->
+  <div class="sim-wrapper reveal">
+    <div class="sim-title">Lente Convergente — Trazado de Rayos</div>
+    <div class="sim-subtitle">Arrastra el control de objeto (p) para ver la imagen formada</div>
+    <canvas class="sim-canvas" id="sim1" width="900" height="320"></canvas>
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Distancia objeto (p)</span>
+        <input type="range" id="p1" min="80" max="420" value="200" oninput="drawSim1()">
+        <span class="ctrl-value" id="p1v">200 px</span>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Focal (f)</span>
+        <input type="range" id="f1" min="60" max="160" value="110" oninput="drawSim1()">
+        <span class="ctrl-value" id="f1v">110 px</span>
+      </div>
+      <button class="btn active" onclick="drawSim1()">↺ Actualizar</button>
+    </div>
+    <div class="info-panel" id="info1">
+      <div class="info-item"><span class="info-key">p =</span><span class="info-val" id="ip1">—</span></div>
+      <div class="info-item"><span class="info-key">q =</span><span class="info-val" id="iq1">—</span></div>
+      <div class="info-item"><span class="info-key">f =</span><span class="info-val" id="if1">—</span></div>
+      <div class="info-item"><span class="info-key">Aumento A =</span><span class="info-val" id="ia1">—</span></div>
+      <div class="info-item"><span class="info-key">Imagen:</span><span class="info-val rose" id="itype1">—</span></div>
+    </div>
+  </div>
+
+  <!-- SIM 2: Divergente -->
+  <div class="sim-wrapper reveal">
+    <div class="sim-title">Lente Divergente — Trazado de Rayos</div>
+    <div class="sim-subtitle">La imagen siempre es virtual, derecha y reducida</div>
+    <canvas class="sim-canvas" id="sim2" width="900" height="320"></canvas>
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Distancia objeto (p)</span>
+        <input type="range" id="p2" min="80" max="380" value="180" oninput="drawSim2()">
+        <span class="ctrl-value" id="p2v">180 px</span>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">|Focal| (|f|)</span>
+        <input type="range" id="f2" min="60" max="150" value="100" oninput="drawSim2()">
+        <span class="ctrl-value" id="f2v">100 px</span>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="info-item"><span class="info-key">p =</span><span class="info-val" id="ip2">—</span></div>
+      <div class="info-item"><span class="info-key">q =</span><span class="info-val" id="iq2">—</span></div>
+      <div class="info-item"><span class="info-key">f =</span><span class="info-val" id="if2">—</span></div>
+      <div class="info-item"><span class="info-key">Aumento A =</span><span class="info-val" id="ia2">—</span></div>
+      <div class="info-item"><span class="info-key">Imagen:</span><span class="info-val rose" id="itype2">—</span></div>
+    </div>
+  </div>
+
+  <!-- SIM 3: Constructor -->
+  <div class="sim-wrapper reveal">
+    <div class="sim-title">Constructor de Lentes — Ecuación de Lensmakers</div>
+    <div class="sim-subtitle">Modifica los radios de curvatura y el índice de refracción</div>
+    <canvas class="sim-canvas" id="sim3" width="900" height="320"></canvas>
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Radio R₁ (mm)</span>
+        <input type="range" id="r1s" min="20" max="200" value="80" oninput="drawSim3()">
+        <span class="ctrl-value" id="r1sv">80</span>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Radio R₂ (mm)</span>
+        <input type="range" id="r2s" min="20" max="200" value="80" oninput="drawSim3()">
+        <span class="ctrl-value" id="r2sv">80</span>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">Índice n₂</span>
+        <input type="range" id="n2s" min="100" max="200" value="150" oninput="drawSim3()">
+        <span class="ctrl-value" id="n2sv">1.50</span>
+      </div>
+      <div>
+        <span class="ctrl-label" style="display:block;margin-bottom:6px;">Tipo</span>
+        <button class="btn active" id="btnConv" onclick="setType(1)">Convergente</button>
+        <button class="btn" id="btnDiv" onclick="setType(-1)" style="margin-left:6px;">Divergente</button>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="info-item"><span class="info-key">1/f =</span><span class="info-val" id="inv_f3">—</span></div>
+      <div class="info-item"><span class="info-key">f =</span><span class="info-val gold" id="f3v">—</span> <span class="info-key">mm</span></div>
+      <div class="info-item"><span class="info-key">P =</span><span class="info-val" id="p3v">—</span> <span class="info-key">D</span></div>
+      <div class="info-item"><span class="info-key">Tipo:</span><span class="info-val rose" id="type3v">—</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ═══════════════════ S4: DESCARTES ═══════════════════ -->
+<div id="s4"></div>
+<section class="section">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Ecuación de Descartes</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <p class="reveal" style="color:rgba(240,244,255,0.75);line-height:1.8;margin-bottom:24px;">
+    Independientemente del tipo de lente (biconvexa, bicóncava o menisco), el análisis geométrico mediante la Ley de Snell en la aproximación paraxial conduce siempre a la misma ecuación fundamental:
+  </p>
+
+  <div class="formula-box reveal" style="font-size:1.4rem;">
+    <span class="formula-label">Ecuación de Descartes · (3.37)</span>
+    1/p + 1/q = (n₂ − n₁)/n₁ · (1/r₁ − 1/r₂)
+  </div>
+
+  <div class="formula-box gold reveal">
+    <span class="formula-label" style="background:var(--midnight);">Ecuación del Constructor · (3.38)</span>
+    1/f = (n₂ − n₁)/n₁ · (1/r₁ − 1/r₂)
+  </div>
+
+  <div class="formula-box reveal" style="font-size:1.6rem;">
+    <span class="formula-label">Forma simplificada · (3.39)</span>
+    1/f = 1/p + 1/q
+  </div>
+
+  <div class="note reveal">
+    <strong>✦ Conclusión fundamental:</strong> Para los tres tipos de lente (biconvexa, bicóncava y menisco), al usar la convención de signos adecuada para r₁ y r₂, se obtiene la <em>misma ecuación universal</em>. Lo que varía son los signos de los radios según la geometría de cada lente. ¡Tres geometrías distintas, una sola ecuación!
+  </div>
+
+  <div class="two-col reveal">
+    <div>
+      <div class="card">
+        <div class="card-title">Desarrollo — Biconvexa</div>
+        <div class="card-body">
+          Aplicando el teorema del ángulo externo y la Ley de Snell (aproximación paraxial: sin θ ≈ θ) en los puntos A y B:<br><br>
+          n₁θ₁ = n₂θ₂ &nbsp;&nbsp; y &nbsp;&nbsp; n₂θ₃ = n₁θ₄<br><br>
+          De la geometría: θ₂ + θ₃ = β₁ + β₂<br>
+          Factorizando: <strong style="color:var(--cyan)">n₁(α₁ + α₂) = (n₂ − n₁)(β₁ + β₂)</strong><br><br>
+          Con tanα ≈ h/p, h/q, y tanβ ≈ h/r₁, h/r₂ en lente delgada.
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card gold">
+        <div class="card-title">Convención de Signos</div>
+        <div class="card-body" style="padding:0;">
+          <table class="sign-table">
+            <thead>
+              <tr><th>Variable</th><th>Positivo (+)</th><th>Negativo (−)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>p</td><td>Objeto real (frente)</td><td>Objeto virtual (detrás)</td></tr>
+              <tr><td>q</td><td>Imagen real (detrás)</td><td>Imagen virtual (frente)</td></tr>
+              <tr><td>r</td><td>Centro detrás de lente</td><td>Centro frente a lente</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert reveal">
+    <strong>⚠️ ¡Cuidado!</strong> "Enfrente" significa del mismo lado que el objeto (donde entra la luz), y "detrás" del lado opuesto (donde emerge la luz). ¡Siempre dibuja el diagrama antes de resolver!
+  </div>
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ═══════════════════ S5: FOCOS ═══════════════════ -->
+<div id="s5"></div>
+<section class="section">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Distancia Focal y Focos</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="theory-grid">
+    <div class="card reveal">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Foco Objeto (Fₒ)</div>
+      <div class="card-body">Es la posición del objeto para la cual los rayos emergen <strong style="color:var(--cyan)">paralelamente al eje</strong> (q = ∞). Su distancia a la lente es la distancia focal objeto f. Se obtiene poniendo p = f y q = ∞ en la ecuación de Descartes.</div>
+    </div>
+    <div class="card gold reveal">
+      <div class="card-icon">✨</div>
+      <div class="card-title">Foco Imagen (Fᵢ)</div>
+      <div class="card-body">Para un rayo paralelo al eje (p = ∞), el rayo refractado pasa por Fᵢ donde q = f. Ambos focos están <strong style="color:var(--gold)">simétricamente ubicados</strong> a ambos lados de la lente en el modelo de lente delgada.</div>
+    </div>
+    <div class="card rose reveal">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Signo de f</div>
+      <div class="card-body">
+        • Si <strong style="color:var(--cyan)">f &gt; 0</strong>: lente <strong>convergente</strong>. Los focos son reales.<br><br>
+        • Si <strong style="color:var(--rose)">f &lt; 0</strong>: lente <strong>divergente</strong>. Los focos son virtuales (la luz no pasa realmente por ellos).
+      </div>
+    </div>
+    <div class="card mint reveal">
+      <div class="card-icon">📏</div>
+      <div class="card-title">Rayos Principales</div>
+      <div class="card-body">
+        Para construir imágenes gráficamente:<br><br>
+        1. <strong style="color:var(--mint)">Paralelo al eje:</strong> se refracta pasando por Fᵢ.<br>
+        2. <strong style="color:var(--mint)">Por el centro óptico:</strong> no se desvía.<br>
+        3. <strong style="color:var(--mint)">Por Fₒ:</strong> emerge paralelo al eje.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"></div>
+
+<!-- ═══════════════════ S6: AUMENTO y POTENCIA ═══════════════════ -->
+<div id="s6"></div>
+<section class="section">
+  <div class="section-header reveal">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Aumento Lateral y Potencia Óptica</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="two-col">
+    <div>
+      <div class="card reveal" style="height:fit-content;">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">Aumento Lateral (A)</div>
+        <div class="card-body">
+          Dado un objeto AB de altura hₒ y su imagen CD de altura hᵢ, de la tangente del ángulo θ:<br><br>
+          tan θ = hₒ/p = −hᵢ/q<br><br>
+          El signo negativo es necesario porque hᵢ es negativo cuando la imagen es invertida.
+        </div>
+      </div>
+      <div class="formula-box reveal" style="margin-top:16px;">
+        <span class="formula-label">Aumento Lateral · (3.40)</span>
+        A = hᵢ/hₒ = −q/p
+      </div>
+      <div class="note reveal" style="margin-top:12px;font-size:0.82rem;">
+        |A| &gt; 1 → Ampliada &nbsp;|&nbsp; |A| &lt; 1 → Reducida<br>
+        A &gt; 0 → Derecha &nbsp;|&nbsp; A &lt; 0 → Invertida
+      </div>
+    </div>
+    <div>
+      <div class="card reveal" style="height:fit-content;">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Potencia Óptica (P)</div>
+        <div class="card-body">
+          La <strong style="color:var(--cyan)">potencia óptica</strong> mide la capacidad de una lente para converger o divergir la luz. Es el inverso de la distancia focal medida en metros.
+          <br><br>La unidad es la <strong style="color:var(--gold)">dioptría (D)</strong>, igual al inverso del metro (m⁻¹).
+        </div>
+      </div>
+      <div class="formula-box gold reveal" style="margin-top:16px;">
+        <span class="formula-label" style="background:var(--midnight);">Potencia Óptica · (3.41)</span>
+        P = 1/f &nbsp;&nbsp; [f en metros]
+      </div>
+      <div class="note reveal" style="margin-top:12px;font-size:0.82rem; background:rgba(240,192,64,0.05);">
+        ⚠️ Recuerda siempre poner las unidades. La distancia focal en la fórmula de potencia debe estar en <strong>metros</strong>, no en centímetros.
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-wrapper reveal" style="margin-top:40px;">
+    <div class="sim-title">Calculadora Interactiva de Lentes</div>
+    <div class="sim-subtitle">Ingresa los valores y obtén todos los parámetros al instante</div>
+    <canvas class="sim-canvas" id="sim4" width="900" height="280"></canvas>
+    <div class="controls" style="gap:20px;flex-wrap:wrap;">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Tipo de lente</span>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button class="btn active" id="btnC4" onclick="setLensType4(1)">Convergente</button>
+          <button class="btn" id="btnD4" onclick="setLensType4(-1)">Divergente</button>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">p (cm)</span>
+        <input type="range" id="p4" min="5" max="100" value="40" oninput="drawSim4()">
+        <span class="ctrl-value" id="p4v">40 cm</span>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">|f| (cm)</span>
+        <input type="range" id="f4" min="5" max="60" value="20" oninput="drawSim4()">
+        <span class="ctrl-value" id="f4v">20 cm</span>
+      </div>
+    </div>
+    <div class="info-panel" id="info4" style="flex-wrap:wrap;gap:16px;margin-top:12px;">
+      <div class="info-item"><span class="info-key">p =</span><span class="info-val" id="s4p">—</span> cm</div>
+      <div class="info-item"><span class="info-key">q =</span><span class="info-val gold" id="s4q">—</span> cm</div>
+      <div class="info-item"><span class="info-key">f =</span><span class="info-val" id="s4f">—</span> cm</div>
+      <div class="info-item"><span class="info-key">A =</span><span class="info-val rose" id="s4a">—</span></div>
+      <div class="info-item"><span class="info-key">P =</span><span class="info-val" id="s4pw">—</span> D</div>
+      <div class="info-item"><span class="info-key">Imagen:</span><span class="info-val" id="s4t">—</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FORMULA TABLE ═══════════════════ -->
+<div id="sf"></div>
+<section class="formula-section">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-header reveal">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Tabla de Fórmulas Clave</h2>
+    </div>
+    <div class="section-divider"></div>
+
+    <table class="formula-table reveal">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Ecuación</th>
+          <th>Variables</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ecuación de Descartes (completa)</td>
+          <td>1/p + 1/q = (n₂−n₁)/n₁ · (1/r₁ − 1/r₂)</td>
+          <td>p: objeto, q: imagen, n₁: medio, n₂: lente, r: radios</td>
+          <td>Universal para lentes delgadas</td>
+        </tr>
+        <tr>
+          <td>Ecuación del Constructor</td>
+          <td>1/f = (n₂−n₁)/n₁ · (1/r₁ − 1/r₂)</td>
+          <td>f: focal, n: índices, r: radios</td>
+          <td>Usada en diseño de lentes</td>
+        </tr>
+        <tr>
+          <td>Ecuación de Descartes (simplificada)</td>
+          <td>1/f = 1/p + 1/q</td>
+          <td>f: focal, p: objeto, q: imagen</td>
+          <td>Válida cuando f es conocida experimentalmente</td>
+        </tr>
+        <tr>
+          <td>Distancia imagen (despejada)</td>
+          <td>q = p·f / (p − f)</td>
+          <td>p: objeto, f: focal</td>
+          <td>Práctica para resolver problemas rápido</td>
+        </tr>
+        <tr>
+          <td>Aumento Lateral</td>
+          <td>A = hᵢ/hₒ = −q/p</td>
+          <td>hᵢ: alt. imagen, hₒ: alt. objeto</td>
+          <td>A&lt;0: invertida; |A|&gt;1: ampliada</td>
+        </tr>
+        <tr>
+          <td>Potencia Óptica</td>
+          <td>P = 1/f</td>
+          <td>f en metros → P en dioptrías (D)</td>
+          <td>Conv.: P&gt;0; Diverg.: P&lt;0</td>
+        </tr>
+        <tr>
+          <td>Ley de Snell (linealizada)</td>
+          <td>n₁θ₁ = n₂θ₂</td>
+          <td>n: índices, θ: ángulos</td>
+          <td>Aproximación paraxial (ángulos pequeños)</td>
+        </tr>
+        <tr>
+          <td>Potencias combinadas</td>
+          <td>P_total = P₁ + P₂</td>
+          <td>P₁, P₂: potencias individuales</td>
+          <td>Válida para lentes en contacto</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════ GLOSSARY ═══════════════════ -->
+<div id="sg"></div>
+<section class="section">
+  <div class="section-header reveal">
+    <span class="section-num">08</span>
+    <h2 class="section-title">Glosario de Términos</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="glossary-grid">
+    <div class="gloss-item reveal"><div class="gloss-term">Lente</div><div class="gloss-def">Sistema óptico formado por dos superficies refringentes curvas que comparten un eje. Desvía los rayos de luz por refracción para formar imágenes.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Índice de Refracción (n)</div><div class="gloss-def">Razón entre la velocidad de la luz en el vacío y en el medio. Determina cuánto se dobla un rayo al pasar de un medio a otro (n = c/v).</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Eje Principal</div><div class="gloss-def">Recta que pasa por los centros de curvatura de ambas superficies de la lente. Define la simetría del sistema óptico.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Centro Óptico (O)</div><div class="gloss-def">Punto de la lente por el que pasan los rayos sin desviarse. En lentes delgadas coincide con el centro geométrico de la lente.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Foco Objeto (Fₒ)</div><div class="gloss-def">Punto del eje principal desde el cual los rayos, tras refractarse, emergen paralelos al eje. Su distancia a la lente es la focal.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Foco Imagen (Fᵢ)</div><div class="gloss-def">Punto del eje principal donde convergen los rayos que entran paralelos al eje (o parecen divergir de él en lentes divergentes).</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Distancia Focal (f)</div><div class="gloss-def">Distancia del centro óptico al foco imagen. Positiva en convergentes, negativa en divergentes. Caracteriza el poder refractivo.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Lente Convergente</div><div class="gloss-def">Lente más gruesa en el centro que en los bordes. Concentra los rayos paralelos en el foco real. Distancia focal positiva (f > 0).</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Lente Divergente</div><div class="gloss-def">Lente más delgada en el centro que en los bordes. Dispersa los rayos como si vinieran de un foco virtual. Distancia focal negativa (f < 0).</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Imagen Real</div><div class="gloss-def">Se forma donde convergen efectivamente los rayos refractados. Puede proyectarse en una pantalla. Ocurre cuando q > 0.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Imagen Virtual</div><div class="gloss-def">Se forma donde se prolongan hacia atrás los rayos refractados. No puede proyectarse. El observador la ve al mirar a través de la lente. q < 0.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Aumento Lateral (A)</div><div class="gloss-def">Cociente entre la altura de la imagen y la del objeto (A = hᵢ/hₒ = −q/p). Indica si la imagen es mayor/menor y derecha/invertida.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Potencia Óptica (P)</div><div class="gloss-def">Inverso de la distancia focal en metros. Se mide en dioptrías (D). Cuanto mayor es P, más fuerte es la lente.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Dioptría (D)</div><div class="gloss-def">Unidad de potencia óptica. 1 D = 1 m⁻¹. Una lente de 2 D tiene focal de 50 cm. Las lentes de gafas se prescriben en dioptrías.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Aproximación Paraxial</div><div class="gloss-def">Simplificación válida para rayos que forman ángulos pequeños con el eje (sin θ ≈ tan θ ≈ θ). Permite linealizar la Ley de Snell.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Radio de Curvatura (r)</div><div class="gloss-def">Distancia del centro de curvatura de una superficie esférica al vértice de dicha superficie. Define la forma de cada cara de la lente.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Ley de Snell</div><div class="gloss-def">n₁ sin θ₁ = n₂ sin θ₂. Gobierna la refracción de la luz al pasar entre medios con diferentes índices. Fundamental para derivar la ecuación de Descartes.</div></div>
+    <div class="gloss-item reveal"><div class="gloss-term">Menisco</div><div class="gloss-def">Lente con una cara convexa y otra cóncava. Puede ser convergente o divergente según cuál cara tenga mayor radio. Es el tipo usado en lentes de contacto.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <p>Mariana Alzate &nbsp;·&nbsp; Manuela Foronda &nbsp;·&nbsp; Camila Marín &nbsp;·&nbsp; Eddier Bohórquez</p>
+  <p style="margin-top:8px;">Lentes: <span>Convergentes y Divergentes</span> &nbsp;·&nbsp; Óptica Física</p>
+</footer>
+
+<script>
+// ─── COVER ANIMATION ───
+const cvs = document.getElementById('cover-canvas');
+const ctx0 = cvs.getContext('2d');
+cvs.width = cvs.offsetWidth; cvs.height = cvs.offsetHeight;
+
+const rays = [];
+for(let i=0;i<12;i++) rays.push({
+  y: Math.random()*cvs.height,
+  speed: 0.4+Math.random()*0.6,
+  alpha: 0.03+Math.random()*0.06,
+  width: Math.random()*1.5
+});
+
+function animCover(){
+  ctx0.clearRect(0,0,cvs.width,cvs.height);
+  const cx = cvs.width*0.55, cy = cvs.height*0.5;
+  // lens shape
+  ctx0.save();
+  ctx0.globalAlpha=0.06;
+  ctx0.beginPath();
+  ctx0.ellipse(cx,cy,30,80,0,0,Math.PI*2);
+  ctx0.fillStyle='#00d4ff'; ctx0.fill();
+  ctx0.restore();
+
+  rays.forEach(r=>{
+    ctx0.save();
+    ctx0.globalAlpha=r.alpha;
+    ctx0.strokeStyle='#00d4ff';
+    ctx0.lineWidth=r.width;
+    ctx0.beginPath();
+    ctx0.moveTo(0,r.y);
+    // converge to lens center
+    ctx0.lineTo(cx-30,cy+(r.y-cy)*0.3);
+    const refY = cy+(r.y-cy)*0.1;
+    ctx0.lineTo(cx+30,refY);
+    ctx0.lineTo(cvs.width,refY+30);
+    ctx0.stroke();
+    ctx0.restore();
+    r.y += r.speed;
+    if(r.y>cvs.height) r.y=-10;
+  });
+  requestAnimationFrame(animCover);
+}
+animCover();
+
+// ─── SCROLL REVEAL ───
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+function scrollTo(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// ─── NAV ACTIVE ───
+window.addEventListener('scroll',()=>{
+  const secs=['s1','s2','s3','s4','s5','s6','sf','sg'];
+  const items=document.querySelectorAll('.toc-item');
+  let active=0;
+  secs.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<100) active=i;
+  });
+  items.forEach((it,i)=>it.classList.toggle('active',i===active));
+});
+
+// ─── HELPERS ───
+function dpr(canvas){
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=canvas.clientWidth*dpr;
+  canvas.height=canvas.clientHeight*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  return ctx;
+}
+
+function grd(ctx,x1,y1,x2,y2,c1,c2){
+  const g=ctx.createLinearGradient(x1,y1,x2,y2);
+  g.addColorStop(0,c1); g.addColorStop(1,c2); return g;
+}
+
+// ─── SIM1: CONVERGENTE ───
+let sim1Type = 1;
+function drawSim1(){
+  const canvas=document.getElementById('sim1');
+  const W=canvas.clientWidth, H=canvas.clientHeight;
+  const ctx=dpr(canvas);
+  const p=+document.getElementById('p1').value;
+  const f=+document.getElementById('f1').value;
+  document.getElementById('p1v').textContent=p+' px';
+  document.getElementById('f1v').textContent=f+' px';
+
+  const cx=W/2, cy=H/2;
+  const q=(p*f)/(p-f);
+  const A=-q/p;
+
+  // bg
+  ctx.fillStyle='#060b1f'; ctx.fillRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='rgba(0,212,255,0.04)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  // axis
+  ctx.strokeStyle='rgba(240,244,255,0.15)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+
+  // focal points
+  const fiX=cx+f, foX=cx-f;
+  [fiX,foX].forEach((x,i)=>{
+    ctx.fillStyle=i===0?'#00d4ff':'#f0c040';
+    ctx.beginPath(); ctx.arc(x,cy,4,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=i===0?'rgba(0,212,255,0.7)':'rgba(240,192,64,0.7)';
+    ctx.font='12px DM Mono,monospace';
+    ctx.fillText(i===0?'Fᵢ':'Fₒ',x-6,cy-10);
+  });
+
+  // lens
+  const lh=H*0.75;
+  ctx.strokeStyle='rgba(0,212,255,0.5)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx,cy-lh/2); ctx.lineTo(cx,cy+lh/2); ctx.stroke();
+  // lens arrows
+  [[cx,cy-lh/2,-1],[cx,cy+lh/2,1]].forEach(([x,y,d])=>{
+    ctx.beginPath();
+    ctx.moveTo(x,y); ctx.lineTo(x-8,y+d*12); ctx.lineTo(x+8,y+d*12);
+    ctx.fillStyle='rgba(0,212,255,0.6)'; ctx.fill();
+  });
+
+  // object
+  const objX=cx-p;
+  const objH=50;
+  ctx.strokeStyle='#f0c040'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(objX,cy); ctx.lineTo(objX,cy-objH); ctx.stroke();
+  ctx.fillStyle='#f0c040';
+  ctx.beginPath(); ctx.moveTo(objX,cy-objH); ctx.lineTo(objX-6,cy-objH+10); ctx.lineTo(objX+6,cy-objH+10); ctx.fill();
+
+  // rays (3 principal)
+  const oTop={x:objX,y:cy-objH};
+  const rays3=[
+    // parallel then through Fi
+    {color:'#00ffc8', pts: q>0
+      ?[oTop,{x:cx,y:oTop.y},{x:cx+q,y:cy-objH*A}]
+      :[oTop,{x:cx,y:oTop.y},{x:W,y:oTop.y+(W-cx)*(cy-objH*A-oTop.y)/(q>0?q:W)}]},
+    // through center
+    {color:'#a78bfa', pts:[oTop,{x:cx,y:cy},{x:q>0?cx+q:W,y:q>0?cy-objH*A:cy+(W-cx)*(-objH*A/q>0?-objH*A/(-q):0)}]},
+    // through Fo then parallel
+    {color:'#ff6b9d', pts:[oTop,{x:foX,y:cy},{x:cx,y:oTop.y+(cx-oTop.x)*(cy-oTop.y)/(foX-oTop.x)},{x:W,y:oTop.y+(cx-oTop.x)*(cy-oTop.y)/(foX-oTop.x)}]}
+  ];
+
+  // simple 3-ray: parallel, center, Fo
+  function ray(pts,color){
+    ctx.save();
+    ctx.strokeStyle=color; ctx.lineWidth=1.5;
+    ctx.shadowBlur=6; ctx.shadowColor=color;
+    ctx.beginPath();
+    pts.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
+    ctx.stroke(); ctx.restore();
+  }
+
+  // Ray 1: parallel to axis → refracts through Fi
+  const r1e = q>0 ? {x:cx+q,y:cy-objH*A} : {x:W, y:cy-objH+(W-cx)*(cy-objH-(cy+objH/q*(W-cx)))/(cx)};
+  ray([oTop,{x:cx,y:oTop.y},q>0?{x:cx+q,y:cy-objH*A}:{x:W,y:oTop.y+(oTop.y-cy)/(f)*(W-cx)}],'#00ffc8');
+  // extend dashed if virtual
+  if(q<0){
+    ctx.save(); ctx.strokeStyle='rgba(0,255,200,0.25)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(cx,oTop.y); ctx.lineTo(cx+q,cy-objH*A); ctx.stroke();
+    ctx.restore(); ctx.setLineDash([]);
+  }
+
+  // Ray 2: through center
+  const slope=(cy-oTop.y)/(cx-oTop.x);
+  ray([oTop,{x:q>0?cx+q:W,y:q>0?cy-objH*A:oTop.y+slope*(W-oTop.x)}],'#a78bfa');
+
+  // Ray 3: through Fo, then parallel
+  const slopeToFo=(cy-oTop.y)/(foX-oTop.x);
+  const yAtLens=oTop.y+slopeToFo*(cx-oTop.x);
+  ray([oTop,{x:cx,y:yAtLens},{x:W,y:yAtLens}],'#ff6b9d');
+
+  // image
+  if(q>0){
+    const imgX=cx+q, imgH=objH*A;
+    ctx.strokeStyle='rgba(255,107,157,0.8)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(imgX,cy); ctx.lineTo(imgX,cy-imgH); ctx.stroke();
+    ctx.fillStyle='rgba(255,107,157,0.8)';
+    const d=imgH<0?1:-1;
+    ctx.beginPath(); ctx.moveTo(imgX,cy-imgH); ctx.lineTo(imgX-6,cy-imgH+d*10); ctx.lineTo(imgX+6,cy-imgH+d*10); ctx.fill();
+  } else {
+    // virtual image dashes
+    const imgX=cx+q, imgH=objH*A;
+    if(imgX>0&&imgX<W){
+      ctx.save(); ctx.strokeStyle='rgba(255,107,157,0.4)'; ctx.lineWidth=1.5; ctx.setLineDash([5,5]);
+      ctx.beginPath(); ctx.moveTo(imgX,cy); ctx.lineTo(imgX,cy-imgH); ctx.stroke();
+      ctx.restore(); ctx.setLineDash([]);
+    }
+  }
+
+  // info
+  document.getElementById('ip1').textContent=p+' px';
+  document.getElementById('iq1').textContent=q.toFixed(1)+' px';
+  document.getElementById('if1').textContent=f+' px';
+  document.getElementById('ia1').textContent=A.toFixed(2)+'×';
+  let tipo='';
+  if(q<0) tipo='Virtual, derecha, reducida';
+  else if(p<f) tipo='Virtual';
+  else if(p===f) tipo='En el infinito';
+  else if(p<2*f) tipo='Real, invertida, ampliada';
+  else if(p===2*f) tipo='Real, invertida, igual';
+  else tipo='Real, invertida, reducida';
+  document.getElementById('itype1').textContent=tipo;
+}
+
+// ─── SIM2: DIVERGENTE ───
+function drawSim2(){
+  const canvas=document.getElementById('sim2');
+  const W=canvas.clientWidth, H=canvas.clientHeight;
+  const ctx=dpr(canvas);
+  const p=+document.getElementById('p2').value;
+  const fabs=+document.getElementById('f2').value;
+  const f=-fabs; // divergente
+  document.getElementById('p2v').textContent=p+' px';
+  document.getElementById('f2v').textContent=fabs+' px';
+
+  const cx=W/2, cy=H/2;
+  const q=(p*f)/(p-f); // always negative for divergent
+  const A=-q/p;
+
+  ctx.fillStyle='#060b1f'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,107,157,0.04)'; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  ctx.strokeStyle='rgba(240,244,255,0.12)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+
+  // focal (virtual)
+  const fiX=cx+f; // negative → left
+  ctx.save(); ctx.strokeStyle='rgba(255,107,157,0.4)'; ctx.lineWidth=1; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(fiX,cy-8); ctx.lineTo(fiX,cy+8); ctx.stroke();
+  ctx.restore(); ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,107,157,0.7)';
+  ctx.beginPath(); ctx.arc(fiX,cy,4,0,Math.PI*2); ctx.fill();
+  ctx.font='12px DM Mono,monospace';
+  ctx.fillStyle='rgba(255,107,157,0.7)'; ctx.fillText('Fᵢ (virtual)',fiX-50,cy-12);
+
+  const foX=cx-f; // positive → right
+  ctx.fillStyle='rgba(240,192,64,0.7)';
+  ctx.beginPath(); ctx.arc(foX,cy,4,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(240,192,64,0.7)'; ctx.fillText('Fₒ',foX+6,cy-12);
+
+  // divergent lens
+  const lh=H*0.72;
+  ctx.strokeStyle='rgba(255,107,157,0.5)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx,cy-lh/2); ctx.lineTo(cx,cy+lh/2); ctx.stroke();
+  [[cx,cy-lh/2,1],[cx,cy+lh/2,-1]].forEach(([x,y,d])=>{
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x-8,y+d*12); ctx.lineTo(x+8,y+d*12);
+    ctx.fillStyle='rgba(255,107,157,0.6)'; ctx.fill();
+  });
+
+  // object
+  const objX=cx-p, objH=50;
+  ctx.strokeStyle='#f0c040'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(objX,cy); ctx.lineTo(objX,cy-objH); ctx.stroke();
+  ctx.fillStyle='#f0c040';
+  ctx.beginPath(); ctx.moveTo(objX,cy-objH); ctx.lineTo(objX-6,cy-objH+10); ctx.lineTo(objX+6,cy-objH+10); ctx.fill();
+
+  const oTop={x:objX,y:cy-objH};
+  const imgX=cx+q; // q<0 → left of lens
+  const imgH=objH*A; // A>0 → same side
+
+  // Ray 1: parallel → diverges as if from Fi
+  // actual ray hits lens at oTop.y, then diverges toward +x appearing from Fi
+  const slopeDiv=(oTop.y-cy)/(cx-fiX); // slope from Fi to lens hit point
+  const endY1=oTop.y+slopeDiv*(W-cx);
+  ctx.save(); ctx.strokeStyle='#00ffc8'; ctx.lineWidth=1.5; ctx.shadowBlur=5; ctx.shadowColor='#00ffc8';
+  ctx.beginPath(); ctx.moveTo(oTop.x,oTop.y); ctx.lineTo(cx,oTop.y); ctx.lineTo(W,endY1); ctx.stroke();
+  // dashed extension to Fi
+  ctx.strokeStyle='rgba(0,255,200,0.2)'; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(cx,oTop.y); ctx.lineTo(fiX,cy); ctx.stroke();
+  ctx.restore(); ctx.setLineDash([]);
+
+  // Ray 2: through center (undeviated)
+  const slope2=(cy-oTop.y)/(cx-oTop.x);
+  ctx.save(); ctx.strokeStyle='#a78bfa'; ctx.lineWidth=1.5; ctx.shadowBlur=5; ctx.shadowColor='#a78bfa';
+  ctx.beginPath(); ctx.moveTo(oTop.x,oTop.y); ctx.lineTo(W,oTop.y+slope2*(W-oTop.x)); ctx.stroke();
+  ctx.restore();
+
+  // Ray 3: toward Fo, then parallel
+  const foXr=cx+Math.abs(f); // Fo is right of lens for divergent
+  const slopeToFo=(cy-oTop.y)/(foXr-oTop.x);
+  const yAtLens3=oTop.y+slopeToFo*(cx-oTop.x);
+  ctx.save(); ctx.strokeStyle='#ff6b9d'; ctx.lineWidth=1.5; ctx.shadowBlur=5; ctx.shadowColor='#ff6b9d';
+  ctx.beginPath(); ctx.moveTo(oTop.x,oTop.y); ctx.lineTo(cx,yAtLens3); ctx.lineTo(W,yAtLens3); ctx.stroke();
+  // dashed extension
+  ctx.strokeStyle='rgba(255,107,157,0.2)'; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(cx,yAtLens3); ctx.lineTo(foXr,cy); ctx.stroke();
+  ctx.restore(); ctx.setLineDash([]);
+
+  // virtual image (dashed)
+  if(imgX>0&&imgX<W){
+    ctx.save(); ctx.strokeStyle='rgba(255,107,157,0.5)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(imgX,cy); ctx.lineTo(imgX,cy-imgH); ctx.stroke();
+    ctx.restore(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(255,107,157,0.5)';
+    ctx.font='11px DM Mono,monospace'; ctx.fillText('Imagen virtual',imgX+8,cy-imgH-6);
+  }
+
+  document.getElementById('ip2').textContent=p+' px';
+  document.getElementById('iq2').textContent=q.toFixed(1)+' px';
+  document.getElementById('if2').textContent=f.toFixed(0)+' px';
+  document.getElementById('ia2').textContent=A.toFixed(3)+'×';
+  document.getElementById('itype2').textContent='Virtual, derecha, reducida';
+}
+
+// ─── SIM3: LENSMAKER ───
+let lensType3=1;
+function setType(t){
+  lensType3=t;
+  document.getElementById('btnConv').classList.toggle('active',t===1);
+  document.getElementById('btnDiv').classList.toggle('active',t===-1);
+  drawSim3();
+}
+
+function drawSim3(){
+  const canvas=document.getElementById('sim3');
+  const W=canvas.clientWidth, H=canvas.clientHeight;
+  const ctx=dpr(canvas);
+  const r1=+document.getElementById('r1s').value;
+  const r2=+document.getElementById('r2s').value;
+  const n2=+document.getElementById('n2s').value/100;
+  const n1=1.0;
+  document.getElementById('r1sv').textContent=r1;
+  document.getElementById('r2sv').textContent=r2;
+  document.getElementById('n2sv').textContent=n2.toFixed(2);
+
+  const sign=lensType3;
+  const invF=(n2-n1)/n1*(sign/r1 - sign/(-r2));
+  const f=1/invF;
+
+  ctx.fillStyle='#060b1f'; ctx.fillRect(0,0,W,H);
+
+  // Draw lens cross-section
+  const cx=W/2, cy=H/2, lh=H*0.65;
+  const thickness=lensType3===1?22:8;
+
+  ctx.save();
+  ctx.strokeStyle=lensType3===1?'rgba(0,212,255,0.6)':'rgba(255,107,157,0.6)';
+  ctx.lineWidth=2;
+  // left surface
+  ctx.beginPath();
+  ctx.moveTo(cx-thickness,cy-lh/2);
+  ctx.bezierCurveTo(cx-thickness+lensType3*20,cy-lh/4, cx-thickness+lensType3*20,cy+lh/4, cx-thickness,cy+lh/2);
+  ctx.stroke();
+  // right surface
+  ctx.beginPath();
+  ctx.moveTo(cx+thickness,cy-lh/2);
+  ctx.bezierCurveTo(cx+thickness-lensType3*20,cy-lh/4, cx+thickness-lensType3*20,cy+lh/4, cx+thickness,cy+lh/2);
+  ctx.stroke();
+  // top/bottom edges
+  ctx.beginPath(); ctx.moveTo(cx-thickness,cy-lh/2); ctx.lineTo(cx+thickness,cy-lh/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-thickness,cy+lh/2); ctx.lineTo(cx+thickness,cy+lh/2); ctx.stroke();
+  // fill
+  ctx.beginPath();
+  ctx.moveTo(cx-thickness,cy-lh/2);
+  ctx.bezierCurveTo(cx-thickness+lensType3*20,cy-lh/4,cx-thickness+lensType3*20,cy+lh/4,cx-thickness,cy+lh/2);
+  ctx.lineTo(cx+thickness,cy+lh/2);
+  ctx.bezierCurveTo(cx+thickness-lensType3*20,cy+lh/4,cx+thickness-lensType3*20,cy-lh/4,cx+thickness,cy-lh/2);
+  ctx.closePath();
+  ctx.fillStyle=lensType3===1?'rgba(0,212,255,0.08)':'rgba(255,107,157,0.08)';
+  ctx.fill();
+  ctx.restore();
+
+  // axis
+  ctx.strokeStyle='rgba(240,244,255,0.1)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+
+  // labels
+  ctx.font='13px Playfair Display,serif';
+  ctx.fillStyle='rgba(240,244,255,0.5)';
+  ctx.fillText('R₁ = '+r1+' mm',20,30);
+  ctx.fillText('R₂ = '+r2+' mm',20,50);
+  ctx.fillText('n₂ = '+n2.toFixed(2),20,70);
+
+  // focal marking
+  const scale=1.2;
+  if(isFinite(f)&&Math.abs(f)<500){
+    const fPx=f*scale;
+    const fiX=cx+fPx, foX=cx-fPx;
+    if(fiX>0&&fiX<W){
+      ctx.fillStyle=lensType3===1?'#00d4ff':'rgba(0,212,255,0.4)';
+      ctx.beginPath(); ctx.arc(fiX,cy,5,0,Math.PI*2); ctx.fill();
+      ctx.font='12px DM Mono,monospace';
+      ctx.fillStyle=lensType3===1?'rgba(0,212,255,0.8)':'rgba(0,212,255,0.4)';
+      ctx.fillText('Fᵢ',fiX-8,cy-12);
+    }
+    if(foX>0&&foX<W){
+      ctx.fillStyle='#f0c040';
+      ctx.beginPath(); ctx.arc(foX,cy,5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(240,192,64,0.8)'; ctx.font='12px DM Mono,monospace';
+      ctx.fillText('Fₒ',foX-8,cy-12);
+    }
+    // dimension line
+    ctx.save(); ctx.strokeStyle='rgba(240,192,64,0.3)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(cx,cy+20); ctx.lineTo(fiX,cy+20); ctx.stroke();
+    ctx.restore(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(240,192,64,0.6)'; ctx.font='11px DM Mono,monospace';
+    ctx.fillText('f = '+f.toFixed(0)+' mm',(cx+fiX)/2-20,cy+36);
+  }
+
+  // rays preview (5 parallel)
+  if(isFinite(f)){
+    for(let i=-2;i<=2;i++){
+      const ry=cy+i*28;
+      const alpha=0.12+0.06*Math.abs(i===0?1:0);
+      ctx.save(); ctx.globalAlpha=alpha+(i===0?0.15:0);
+      ctx.strokeStyle=lensType3===1?'#00ffc8':'#ff6b9d';
+      ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(0,ry); ctx.lineTo(cx,ry);
+      const fPx2=f*scale;
+      const fiX2=cx+fPx2;
+      if(lensType3===1){
+        ctx.lineTo(fiX2<W?fiX2:W, fiX2<W?cy:(ry+(cy-ry)/(fPx2)*(W-cx)));
+      } else {
+        const slope2=(ry-cy)/(cx-fiX2);
+        ctx.lineTo(W,ry+slope2*(W-cx));
+      }
+      ctx.stroke(); ctx.restore();
+    }
+  }
+
+  document.getElementById('inv_f3').textContent=invF.toFixed(4)+' mm⁻¹';
+  document.getElementById('f3v').textContent=isFinite(f)?f.toFixed(1):'∞';
+  document.getElementById('p3v').textContent=isFinite(f)?(1000/f).toFixed(2):'0.00';
+  document.getElementById('type3v').textContent=f>0?'Convergente':'Divergente';
+}
+
+// ─── SIM4: CALCULATOR ───
+let lensType4=1;
+function setLensType4(t){
+  lensType4=t;
+  document.getElementById('btnC4').classList.toggle('active',t===1);
+  document.getElementById('btnD4').classList.toggle('active',t===-1);
+  drawSim4();
+}
+
+function drawSim4(){
+  const canvas=document.getElementById('sim4');
+  const W=canvas.clientWidth, H=canvas.clientHeight;
+  const ctx=dpr(canvas);
+  const pCm=+document.getElementById('p4').value;
+  const fCm=+document.getElementById('f4').value * lensType4;
+  document.getElementById('p4v').textContent=pCm+' cm';
+  document.getElementById('f4v').textContent=Math.abs(fCm)+' cm';
+
+  const qCm=(pCm*fCm)/(pCm-fCm);
+  const A=-qCm/pCm;
+  const P=(1/fCm)*100; // convert cm to m: f(m)=f(cm)/100
+
+  ctx.fillStyle='#060b1f'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(0,212,255,0.03)'; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  const scale=2.8;
+  const cx=W/2, cy=H/2;
+  const color=lensType4===1?'#00d4ff':'#ff6b9d';
+
+  // axis
+  ctx.strokeStyle='rgba(240,244,255,0.12)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+
+  // lens
+  const lh=H*0.72;
+  ctx.strokeStyle=lensType4===1?'rgba(0,212,255,0.5)':'rgba(255,107,157,0.5)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx,cy-lh/2); ctx.lineTo(cx,cy+lh/2); ctx.stroke();
+  [[cx,cy-lh/2,-1],[cx,cy+lh/2,1]].forEach(([x,y,d])=>{
+    if(lensType4===1){
+      ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x-8,y+d*12); ctx.lineTo(x+8,y+d*12);
+      ctx.fillStyle=lensType4===1?'rgba(0,212,255,0.5)':'rgba(255,107,157,0.5)'; ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.moveTo(x-8,y); ctx.lineTo(x+8,y);
+      ctx.strokeStyle='rgba(255,107,157,0.5)'; ctx.lineWidth=2; ctx.stroke();
+    }
+  });
+
+  // focos
+  const fPx=fCm*scale;
+  [[cx+fPx,'Fᵢ',color],[cx-fPx,'Fₒ','#f0c040']].forEach(([x,label,c])=>{
+    if(x>10&&x<W-10){
+      ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x,cy,4,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=c; ctx.font='11px DM Mono,monospace'; ctx.fillText(label,x-8,cy-10);
+    }
+  });
+
+  // object
+  const objX=cx-pCm*scale;
+  const objH=42;
+  if(objX>0){
+    ctx.strokeStyle='#f0c040'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(objX,cy); ctx.lineTo(objX,cy-objH); ctx.stroke();
+    ctx.fillStyle='#f0c040';
+    ctx.beginPath(); ctx.moveTo(objX,cy-objH); ctx.lineTo(objX-5,cy-objH+9); ctx.lineTo(objX+5,cy-objH+9); ctx.fill();
+    ctx.fillStyle='rgba(240,192,64,0.6)'; ctx.font='10px DM Mono,monospace'; ctx.fillText('Objeto',objX+5,cy-objH-4);
+  }
+
+  // image
+  const imgX=cx+qCm*scale;
+  const imgH=objH*A;
+  const isDashed=qCm<0;
+  if(imgX>0&&imgX<W){
+    ctx.save();
+    ctx.strokeStyle='rgba(255,107,157,0.8)'; ctx.lineWidth=1.5;
+    if(isDashed) ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(imgX,cy); ctx.lineTo(imgX,cy-imgH); ctx.stroke();
+    ctx.restore(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(255,107,157,0.7)'; ctx.font='10px DM Mono,monospace';
+    ctx.fillText(qCm<0?'Imagen virtual':'Imagen real',imgX+6,Math.min(cy-imgH,cy)-6);
+  }
+
+  // measurement labels
+  ctx.fillStyle='rgba(240,244,255,0.25)'; ctx.font='11px DM Mono,monospace';
+  if(objX>0) ctx.fillText('p='+pCm+'cm',(objX+cx)/2-15,cy+20);
+  if(imgX>0&&imgX<W) ctx.fillText('q='+qCm.toFixed(1)+'cm',(cx+imgX)/2-15,cy+35);
+
+  document.getElementById('s4p').textContent=pCm+' cm';
+  document.getElementById('s4q').textContent=qCm.toFixed(1)+' cm';
+  document.getElementById('s4f').textContent=fCm+' cm';
+  document.getElementById('s4a').textContent=A.toFixed(3)+'×';
+  document.getElementById('s4pw').textContent=(P).toFixed(2);
+  let tipo='';
+  if(lensType4===-1) tipo='Virtual, derecha, reducida';
+  else if(qCm<0) tipo='Virtual, derecha';
+  else if(A<0&&Math.abs(A)>1) tipo='Real, invertida, ampliada';
+  else if(A<0&&Math.abs(A)<1) tipo='Real, invertida, reducida';
+  else tipo='Real, invertida, igual';
+  document.getElementById('s4t').textContent=tipo;
+}
+
+// ─── INIT ───
+window.addEventListener('load',()=>{
+  drawSim1(); drawSim2(); drawSim3(); drawSim4();
+});
+window.addEventListener('resize',()=>{
+  drawSim1(); drawSim2(); drawSim3(); drawSim4();
+  const cvs2=document.getElementById('cover-canvas');
+  cvs2.width=cvs2.offsetWidth; cvs2.height=cvs2.offsetHeight;
+});
+</script>
+</body>
+</html>
